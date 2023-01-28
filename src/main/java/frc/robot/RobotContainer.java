@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
-import frc.constants.Port;
-import frc.controls.DriverController;
-import frc.shuffleboard.AutonomousTab;
-import frc.shuffleboard.DriverControllerTab;
-import frc.subsystems.Drivetrain;
+import frc.robot.constants.Port;
+import frc.robot.controls.DriverController;
+import frc.robot.shuffleboard.AutonomousTab;
+import frc.robot.shuffleboard.DriverControllerTab;
+import frc.robot.subsystems.Drivetrain;
 
 
 public final class RobotContainer 

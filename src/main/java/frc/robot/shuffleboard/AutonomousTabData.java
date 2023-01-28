@@ -1,4 +1,4 @@
-package frc.shuffleboard;
+package frc.robot.shuffleboard;
 
 // Create a class to hold the data on the Shuffleboard tab
 public class AutonomousTabData

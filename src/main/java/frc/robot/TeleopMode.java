@@ -6,13 +6,12 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.constants.Constant;
-
-import frc.controls.DriverController;
-import frc.controls.DriverController.DriverAxisAction;
-import frc.controls.DriverController.DriverButtonAction;
-import frc.controls.DriverController.DriverDpadAction;
-import frc.subsystems.Drivetrain;
+import frc.robot.constants.Constant;
+import frc.robot.controls.DriverController;
+import frc.robot.controls.DriverController.DriverAxisAction;
+import frc.robot.controls.DriverController.DriverButtonAction;
+import frc.robot.controls.DriverController.DriverDpadAction;
+import frc.robot.subsystems.Drivetrain;
 
 public class TeleopMode implements ModeTransition
 {

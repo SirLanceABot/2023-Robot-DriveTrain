@@ -1,4 +1,4 @@
-package frc.test;
+package frc.robot.test;
 
 import java.lang.invoke.MethodHandles;
 

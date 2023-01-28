@@ -1,4 +1,4 @@
-package frc.subsystems;
+package frc.robot.subsystems;
 
 import java.lang.invoke.MethodHandles;
 
@@ -21,11 +21,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.Constant;
+import frc.robot.constants.Port;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.MathUtil;
-
-import frc.constants.Constant;
-import frc.constants.Port;
 
 public class SwerveModule
 {

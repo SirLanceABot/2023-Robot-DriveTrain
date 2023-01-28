@@ -1,4 +1,4 @@
-package frc.commands;
+package frc.robot.commands;
 
 public interface Command
 {

@@ -1,9 +1,9 @@
-package frc.commands;
+package frc.robot.commands;
 
 import java.lang.invoke.MethodHandles;
 
 import frc.robot.RobotContainer;
-import frc.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class RotateToAngle implements Command 
 {

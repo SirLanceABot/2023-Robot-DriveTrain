@@ -1,8 +1,11 @@
-package frc.commands;
+package frc.robot.commands;
 
 import java.lang.invoke.MethodHandles;
 
-public class CommandTemplate implements Command 
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Drivetrain;
+
+public class StopDriving implements Command 
 {
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 
@@ -15,11 +18,15 @@ public class CommandTemplate implements Command
 
 
     // *** CLASS & INSTANCE VARIABLES ***
+    private static final Drivetrain DRIVETRAIN = RobotContainer.DRIVETRAIN;
     private boolean isFinished;
+
+    // This variable is only used to simulate the robot stopping
+    private boolean isRobotStoppedSimulation = false;
 
 
     // *** CLASS CONSTRUCTOR ***
-    public CommandTemplate()
+    public StopDriving()
     {
         isFinished = false;
     }
@@ -28,15 +35,27 @@ public class CommandTemplate implements Command
     public void init()
     {
         System.out.println(this);
+
         isFinished = false;
+        isRobotStoppedSimulation = false;
+
+        //TODO: add actual DRIVETRAIN methods
     }
 
     public void execute()
     {
-        if(true)
+        isRobotStoppedSimulation = true;
+        
+        if(isRobotStoppedSimulation)
         {
+            System.out.println("Robot is stopped");
             isFinished = true;
         }
+
+        //TODO: add actual DRIVETRAIN methods
+
+        // DRIVETRAIN.stopMotor();
+        isFinished = true;
     }
 
     public boolean isFinished()
@@ -51,6 +70,6 @@ public class CommandTemplate implements Command
 
     public String toString()
     {
-        return "CommandTemplate()";
+        return "StopDriving()";
     }
 }

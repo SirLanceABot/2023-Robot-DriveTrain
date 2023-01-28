@@ -1,10 +1,10 @@
-package frc.commands;
+package frc.robot.commands;
 
 import java.lang.invoke.MethodHandles;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
-import frc.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class DriveStraight implements Command 
 {

@@ -1,4 +1,4 @@
-package frc.template;
+package frc.robot.template;
 
 import java.lang.invoke.MethodHandles;
 

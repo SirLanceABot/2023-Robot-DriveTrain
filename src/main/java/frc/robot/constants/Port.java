@@ -1,8 +1,8 @@
-package frc.constants;
+package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.subsystems.DrivetrainConfig;
-import frc.subsystems.SwerveModuleConfig;
+import frc.robot.subsystems.DrivetrainConfig;
+import frc.robot.subsystems.SwerveModuleConfig;
 
 //TODO: Get right values for each port
 public final class Port 

@@ -1,4 +1,4 @@
-package frc.controls;
+package frc.robot.controls;
 
 import java.lang.invoke.MethodHandles;
 

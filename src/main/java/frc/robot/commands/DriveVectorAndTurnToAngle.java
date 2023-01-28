@@ -1,12 +1,12 @@
-package frc.commands;
+package frc.robot.commands;
 
 import java.lang.invoke.MethodHandles;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
-import frc.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain;
 
-public class DriveVector implements Command 
+public class DriveVectorAndTurnToAngle implements Command 
 {
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 
@@ -26,15 +26,24 @@ public class DriveVector implements Command
     private final double SLOW_RAMP_RATE = 0.75;
     private final double FAST_RAMP_RATE = 0.1;
     private Translation2d startingPosition;
+
+    private static final double ANGLE_THRESHOLD = 1.0;
+    private double minAngularVelocity;
+    private double maxAngularVelocity;
+    private double angle;
     private boolean isFinished;
 
 
     // *** CLASS CONSTRUCTOR ***
-    public DriveVector(double speed_metersPerSecond, double xDisplacement_meters, double yDisplacement_meters)
+    public DriveVectorAndTurnToAngle(double speed_metersPerSecond, double xDisplacement_meters, double yDisplacement_meters, double minAngularVelocity, double maxAngularVelocity, double angle)
     {
         this.speed_metersPerSecond = speed_metersPerSecond;
         this.xDisplacement_meters = xDisplacement_meters;
         this.yDisplacement_meters = yDisplacement_meters;
+
+        this.minAngularVelocity = minAngularVelocity;
+        this.maxAngularVelocity = maxAngularVelocity;
+        this.angle = angle;
 
         isFinished = false;
     }
@@ -52,7 +61,7 @@ public class DriveVector implements Command
 
     public void execute()
     {
-        if(DRIVETRAIN.driveVector(startingPosition, speed_metersPerSecond, xDisplacement_meters, yDisplacement_meters))
+        if(DRIVETRAIN.driveVectorAndTurnToAngle(startingPosition, speed_metersPerSecond, xDisplacement_meters, yDisplacement_meters, minAngularVelocity, maxAngularVelocity, angle, ANGLE_THRESHOLD))
         {
             System.out.println("Finished Driving");
             isFinished = true;
@@ -73,6 +82,6 @@ public class DriveVector implements Command
 
     public String toString()
     {
-        return "DriveVector(" + speed_metersPerSecond + ", " + xDisplacement_meters + ", " + yDisplacement_meters + ")";
+        return "DriveVectorAndTurnToAngle(" + speed_metersPerSecond + ", " + xDisplacement_meters + ", " + yDisplacement_meters + ", " + minAngularVelocity + ", " + maxAngularVelocity + ", " + angle + ")";
     }
 }

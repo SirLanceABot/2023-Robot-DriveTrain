@@ -1,9 +1,9 @@
-package frc.shuffleboard;
+package frc.robot.shuffleboard;
 
 import java.lang.invoke.MethodHandles;
 
-import frc.controls.DriverController;
 import frc.robot.RobotContainer;
+import frc.robot.controls.DriverController;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;

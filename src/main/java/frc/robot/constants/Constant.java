@@ -1,4 +1,4 @@
-package frc.constants;
+package frc.robot.constants;
 
 //TODO: Add constants
 

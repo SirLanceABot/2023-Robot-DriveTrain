@@ -1,4 +1,4 @@
-package frc.shuffleboard;
+package frc.robot.shuffleboard;
 
 import java.lang.invoke.MethodHandles;
 
