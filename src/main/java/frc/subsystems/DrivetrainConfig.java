@@ -1,4 +1,4 @@
-package frc.drivetrain;
+package frc.subsystems;
 
 public class DrivetrainConfig
 {

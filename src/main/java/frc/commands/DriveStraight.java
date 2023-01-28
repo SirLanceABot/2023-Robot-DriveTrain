@@ -3,8 +3,8 @@ package frc.commands;
 import java.lang.invoke.MethodHandles;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.drivetrain.Drivetrain;
 import frc.robot.RobotContainer;
+import frc.subsystems.Drivetrain;
 
 public class DriveStraight implements Command 
 {

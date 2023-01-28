@@ -4,7 +4,7 @@ import java.lang.invoke.MethodHandles;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
-import frc.drivetrain.Drivetrain;
+import frc.subsystems.Drivetrain;
 
 public class DriveVectorAndTurnToAngle implements Command 
 {

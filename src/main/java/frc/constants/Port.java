@@ -1,8 +1,8 @@
 package frc.constants;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.drivetrain.DrivetrainConfig;
-import frc.drivetrain.SwerveModuleConfig;
+import frc.subsystems.DrivetrainConfig;
+import frc.subsystems.SwerveModuleConfig;
 
 //TODO: Get right values for each port
 public final class Port 

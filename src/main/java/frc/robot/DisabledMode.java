@@ -2,8 +2,8 @@ package frc.robot;
 
 import java.lang.invoke.MethodHandles;
 
-import frc.drivetrain.Drivetrain;
 import frc.robot.Robot.RobotState;
+import frc.subsystems.Drivetrain;
 
 
 public class DisabledMode implements ModeTransition
