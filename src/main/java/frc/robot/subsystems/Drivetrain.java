@@ -532,4 +532,12 @@ public class Drivetrain extends RobotDriveBase
     return angleXZ*360./(2.*Math.PI);
   }
 
+
+    public void SwerveDrive(Double double1, Double double2) {
+    }
+
+
+    public void setDefaultCommand(frc.robot.commands.SwerveDrive swerveDrive) {
+    }
+
 }

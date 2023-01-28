@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+import frc.robot.commands.SwerveDrive;
 import frc.robot.constants.Port;
 import frc.robot.controls.DriverController;
 import frc.robot.shuffleboard.AutonomousTab;
@@ -120,4 +124,25 @@ The roboRIO comment is >PRETTY_HOSTNAME="Programmers' Tub 1"
 
     }
         
-}
+   
+ 
+    private void configureBindings()
+    {
+        configureBindings();
+    }
+    //FIXME 
+    private void configureDriverBindings(GenericHID joystick)
+    {
+      if(joystick != null && DRIVETRAIN != null)
+        {
+            //JoystickButton drivetrainA = new JoystickButton(joystick,1);
+        Supplier<Double> leftYAxis = () -> { return joystick.getRawAxis(1); };
+        Supplier<Double> rightXAxis = () -> {return joystick.getRawAxis(1); };
+        DRIVETRAIN.setDefaultCommand(new SwerveDrive(DRIVETRAIN, leftYAxis, rightXAxis));
+        }
+  
+    }
+     
+  
+  }
+
