@@ -1,148 +1,103 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.constants.Port;
 import frc.robot.controls.DriverController;
-import frc.robot.shuffleboard.AutonomousTab;
-import frc.robot.shuffleboard.DriverControllerTab;
 import frc.robot.subsystems.Drivetrain;
 
 
-public final class RobotContainer 
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
+public class RobotContainer
 {
-    //FIXME write code for joystickDriveCommand
-    // private void configDefaultSubsystemCommands()
-    // {
-    //     Drivetrain.setDefaultCommand(Drivetrain.joystickDriveCommand() );
-    // }
-
+    // This string gets the full name of the class, including the package name
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
-  
 
     // *** STATIC INITIALIZATION BLOCK ***
     // This block of code is run first when the class is loaded
-
-    
     static
     {
         System.out.println("Loading: " + fullClassName);
     }
+	
+	private boolean useFullRobot		= false;
+	private boolean useBindings			= false;
 
-    
-    // *** INCLUDED ROBOT OBJECTS ***
-    // Switch objects to true that you need to use
-    private static boolean useFullRobot               = false;
-    
-    private static boolean useDrivetrain              = true;
-   
-    private static boolean useDriverController        = true;
-    private static boolean useAutonomousTab           = true;
+	private boolean useDrivetrain   	= false;
+    private boolean useDriverController = false;
 
-   
-    // *** ROBOT OBJECT DECLARATION ***
-    public static final Drivetrain DRIVETRAIN;
-    public static final DriverController DRIVER_CONTROLLER;
-    public static final DriverControllerTab DRIVER_CONTROLLER_TAB;
-    public static final AutonomousTab AUTONOMOUS_TAB;
-    public static final PowerDistribution PDH;
+    public final Drivetrain drivetrain;
+    public final DriverController driverController;
     private static final Accelerometer accelerometer = new BuiltInAccelerometer(Accelerometer.Range.k2G);
 
-    // *** ROBOT OBJECT INSTANTIATION ***
-    static
-    {
-        //// start get roboRIO comment
-/*
-roboRIO dashboard reads:
-Programmers' Tub 1
-
-prints from here:
-The roboRIO comment is >PRETTY_HOSTNAME="Programmers' Tub 1"
-<
-*/
-        final Path commentPath = Path.of("/etc/machine-info");
-        try {  
-        // var temp = System.currentTimeMillis() + "," + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() + "\n");
-        // Files.writeString(memoryLog, temp, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        var comment = Files.readString(commentPath);
-        System.out.println("The roborRIO comment is >" + comment + "<");
-        } catch (IOException e) {
-        // Couldn't read the file -- handle it how you want
-        System.out.println(e);
-        }
-        //// end get roboRIO comment
-
-    
-        final boolean isCompetitionRobot = true; //competitionRobotFlag.get();
-        String robot = "";
-        if(isCompetitionRobot)
-            robot = "**   Competition Robot  Competition Robot   **";
-        else
-            robot = "**    Test Robot  Test Robot  Test Robot    **";
-        System.out.println("\n\n**********************************************");
-        System.out.println(robot);
-        System.out.println(robot);
-        System.out.println(robot);
-        System.out.println("**********************************************\n\n");
-
-       
-        // final int CLIMBER_STAGE_ONE_LEADER_PORT = isCompetitionRobot ? Port.Motor.CLIMBER_STAGE_ONE_LEADER : Port.MotorTesting.CLIMBER_STAGE_ONE_LEADER_TEST;
-        // final int CLIMBER_STAGE_TWO_LEADER_PORT  = isCompetitionRobot ? Port.Motor.CLIMBER_STAGE_TWO_LEADER : Port.MotorTesting.CLIMBER_STAGE_TWO_LEADER_TEST;
-
-        DRIVETRAIN = useFullRobot || useDrivetrain ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer) : null;
-       
-      
-        DRIVER_CONTROLLER = useFullRobot || useDriverController ? new DriverController(Port.Controller.DRIVER) : null;
-        DRIVER_CONTROLLER_TAB = useFullRobot || useDriverController ? new DriverControllerTab() : null;
-        AUTONOMOUS_TAB = useFullRobot || useAutonomousTab ? new AutonomousTab() : null;
-      
-        PDH = new PowerDistribution(Port.Sensor.PDH_CAN_ID, ModuleType.kRev);
-    }
-
-
-    // *** CLASS CONSTRUCTOR ***
-    private RobotContainer()
-    {
-        throw new UnsupportedOperationException("This is a utility class!");
-    }
-
-
-    // *** CLASS & INSTANCE METHODS ***
-    public static void runMeFirst()
-    {
-
-    }
+	
+	// private Joystick joystick;
+	
+	/** 
+	 * The container for the robot. Contains subsystems, OI devices, and commands.
+	 * Use the default modifier so that new objects can only be constructed in the same package.
+	 */
+	RobotContainer()
+	{
+		// Create the needed subsystems
+		driverController = (useFullRobot || useDriverController) ? new DriverController(0)     : null;
+		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer, driverController) 	                : null;
         
-   
- 
+		
+
+		// Configure the trigger bindings
+		if(useFullRobot || useBindings)
+			configureBindings();
+	}
+
+	/**
+	 * Use this method to define your trigger->command mappings. Triggers can be created via the
+	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+	 * predicate, or via the named factories in {@link
+	 * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+	 * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+	 * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+	 * joysticks}.
+	 */
     private void configureBindings()
     {
-        configureBindings();
+        configureDriverBindings();
     }
+
     //FIXME 
-    private void configureDriverBindings(GenericHID joystick)
+    private void configureDriverBindings()
     {
-      if(joystick != null && DRIVETRAIN != null)
+      if(driverController != null && drivetrain != null)
         {
             //JoystickButton drivetrainA = new JoystickButton(joystick,1);
-        Supplier<Double> leftYAxis = () -> { return joystick.getRawAxis(1); };
-        Supplier<Double> rightXAxis = () -> {return joystick.getRawAxis(1); };
-        DRIVETRAIN.setDefaultCommand(new SwerveDrive(DRIVETRAIN, leftYAxis, rightXAxis));
+        Supplier<Double> leftYAxis = () -> { return driverController.getRawAxis(1); };
+        Supplier<Double> rightXAxis = () -> {return driverController.getRawAxis(1); };
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, leftYAxis, rightXAxis));
         }
   
     }
-     
-  
-  }
 
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand()
+	{
+		return null;
+	}
+}

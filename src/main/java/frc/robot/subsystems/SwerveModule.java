@@ -20,13 +20,16 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constant;
 import frc.robot.constants.Port;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.drive.*;
 
-public class SwerveModule
+
+public class SwerveModule extends RobotDriveBase
 {
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 
@@ -360,4 +363,16 @@ public class SwerveModule
         getDrivingEncoderPosition(), Rotation2d.fromDegrees(getTurningEncoderPosition()));
   }
 
+  @Override
+  public String getDescription()
+  {
+      return "Swerve " + moduleName;
+  }
+
+  @Override
+  public void stopMotor()
+  {
+    stopModule();
+  }
+    
 }

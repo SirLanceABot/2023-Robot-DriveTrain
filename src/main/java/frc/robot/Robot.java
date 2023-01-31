@@ -7,9 +7,19 @@ package frc.robot;
 import java.lang.invoke.MethodHandles;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Subsystem4237;
 
+/**
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot
 {
+    // This string gets the full name of the class, including the package name
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 
     // *** STATIC INITIALIZATION BLOCK ***
@@ -17,42 +27,22 @@ public class Robot extends TimedRobot
     static
     {
         System.out.println("Loading: " + fullClassName);
-        RobotContainer.runMeFirst();
-        robotState = RobotState.kNone;
     }
 
-    /**
-     * This keeps track of the current state of the robot, from startup to auto, to teleop, etc.
-     */
-    public static enum RobotState
-    {
-        kNone,
-        kRobotInit,
-        kDisabledAfterRobotInit,
-        kAutonomous,
-        kDisabledAfterAutonomous,
-        kTeleop,
-        kDisabledAfterTeleop,
-        kTest;
-    }
-
-    // *** CLASS & INSTANCE VARIABLES ***
-  
-    // private static final PowerDistribution PDH = RobotContainer.PDH;
- 
     
-    private static final DisabledMode disabled = new DisabledMode();
-    private static final TestMode test = new TestMode();
-    private static final AutonomousMode autonomous = new AutonomousMode();
-    private static final TeleopMode teleop = new TeleopMode();
+    // *** CLASS AND INSTANCE VARIABLES ***
+    private final RobotContainer robotContainer = new RobotContainer();
+    private Command autonomousCommand = null;
+    // private TestMode testMode = null;
+    
 
-    private static RobotState robotState = RobotState.kNone;
+    /** 
+     * This class determines the actions of the robot, depending on the mode and state of the robot.
+     * Use the default modifier so that new objects can only be constructed in the same package.
+     */
+    Robot()
+    {}
 
-    // *** CLASS CONSTRUCTOR ***
-    public Robot()
-    {
-
-    }
 
     /**
      * This method runs when the robot first starts up.
@@ -60,101 +50,24 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit()
     {
-        System.out.println("\n\n2022-Robot-Development\n\n");
-        robotState = RobotState.kRobotInit;
+        System.out.println("Robot Init");
     }
+
 
     /**
      * This method runs periodically (20ms) while the robot is powered on.
      */
     @Override
-    public void robotPeriodic(){ }
-
-    /**
-     * This method runs one time when the robot enters autonomous mode.
-     */
-    @Override
-    public void autonomousInit()
+    public void robotPeriodic()
     {
-        robotState = RobotState.kAutonomous;
-
-        autonomous.init();
-    }
-
-    /**
-     * This method runs periodically (20ms) during autonomous mode.
-     */
-    @Override
-    public void autonomousPeriodic()
-    {
-        autonomous.periodic();
-    }
-
-    /**
-     * This method runs one time when the robot exits autonomous mode.
-     */
-    @Override
-    public void autonomousExit()
-    {
-        autonomous.exit();
-    }
-
-    /**
-     * This method runs one time when the robot enters teleop mode.
-     */
-    @Override
-    public void teleopInit()
-    {
-        robotState = RobotState.kTeleop;
-
-        teleop.init();
-    }
-
-    /**
-     * This method runs periodically (20ms) during teleop mode.
-     */
-    @Override
-    public void teleopPeriodic()
-    {
-        teleop.periodic();
-    }
-
-    /**
-     * This method runs one time when the robot exits teleop mode.
-     */
-    @Override
-    public void teleopExit()
-    {
-        teleop.exit();
-    }
-
-    /**
-     * This method runs one time when the robot enters test mode.
-     */
-    @Override
-    public void testInit()
-    {
-        robotState = RobotState.kTest;
-
-        test.init();
-    }
-
-    /**
-     * This method runs periodically (20ms) during test mode.
-     */
-    @Override
-    public void testPeriodic()
-    {
-        test.periodic();
-    }
-
-    /**
-     * This method runs one time when the robot exits test mode.
-     */
-    @Override
-    public void testExit()
-    {
-        test.exit();
+        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+        // commands, running already-scheduled commands, removing finished or interrupted commands,
+        // and running subsystem periodic() methods.  This must be called from the robot's periodic
+        // block in order for anything in the Command-based framework to work.
+       
+        Subsystem4237.readInputs();
+        CommandScheduler.getInstance().run();
+        Subsystem4237.writeOutputs();
     }
 
     /**
@@ -163,24 +76,7 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        if (robotState == RobotState.kRobotInit)
-        {
-            robotState = RobotState.kDisabledAfterRobotInit;
-        }
-        else if (robotState == RobotState.kAutonomous)
-        {
-            robotState = RobotState.kDisabledAfterAutonomous;
-        }
-        else if (robotState == RobotState.kTeleop)
-        {
-            robotState = RobotState.kDisabledAfterTeleop;
-        }
-        else if (robotState == RobotState.kTest)
-        {
-            robotState = RobotState.kDisabledAfterRobotInit;
-        }
-
-        disabled.init();
+        System.out.println("Disabled Mode");
     }
 
     /**
@@ -188,28 +84,130 @@ public class Robot extends TimedRobot
      */
     @Override
     public void disabledPeriodic()
-    {
-        disabled.periodic();
-    }
+    {}
 
     /**
      * This method runs one time when the robot exits disabled mode.
      */
     @Override
     public void disabledExit()
-    {
-        disabled.exit();
-    }    
+    {}
 
     /**
-     * This method returns the current state of the robot
-     * @return the robot state
-     * @see RobotState
+     * This method runs one time when the robot enters autonomous mode.
      */
-    public static RobotState getRobotState()
+    @Override
+    public void autonomousInit()
     {
-        return robotState;
+        System.out.println("Autonomous Mode");
+
+        autonomousCommand = robotContainer.getAutonomousCommand();
+
+        // Schedule the autonomous command
+        if (autonomousCommand != null)
+        {
+            autonomousCommand.schedule();
+        }
     }
 
-   
+    /**
+     * This method runs periodically (20ms) during autonomous mode.
+     */
+    @Override
+    public void autonomousPeriodic()
+    {}
+
+        /**
+     * This method runs one time when the robot exits autonomous mode.
+     */
+    @Override
+    public void autonomousExit()
+    {}
+
+    /**
+     * This method runs one time when the robot enters teleop mode.
+     */
+    @Override
+    public void teleopInit()
+    {
+        System.out.println("Teleop Mode");
+
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (autonomousCommand != null)
+        {
+            autonomousCommand.cancel();
+            autonomousCommand = null;
+        }
+    }
+
+    /**
+     * This method runs periodically (20ms) during teleop mode.
+     */
+    @Override
+    public void teleopPeriodic()
+    {}
+
+    /**
+     * This method runs one time when the robot exits teleop mode.
+     */
+    @Override
+    public void teleopExit()
+    {}
+
+    /**
+     * This method runs one time when the robot enters test mode.
+     */
+    @Override
+    public void testInit()
+    {
+        System.out.println("Test Mode");
+
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+
+        // // Create a TestMode object to test one team members code.
+        // testMode = new TestMode(robotContainer);
+
+        // testMode.init();
+    }
+
+    /**
+     * This method runs periodically (20ms) during test mode.
+     */
+    @Override
+    public void testPeriodic()
+    {
+        // testMode.periodic();
+    }
+
+    /**
+     * This method runs one time when the robot exits test mode.
+     */
+    @Override
+    public void testExit()
+    {
+        // testMode.exit();
+
+        // // Set the TestMode object to null so that garbage collection will remove the object.
+        // testMode = null;
+    }
+
+    /**
+     * This method runs one time when the robot enters simulation mode.
+     */
+    @Override
+    public void simulationInit()
+    {
+        System.out.println("Simulation Mode");
+    }
+
+    /**
+     * This method runs periodically (20ms) during simulation mode.
+     */
+    @Override
+    public void simulationPeriodic()
+    {}
 }

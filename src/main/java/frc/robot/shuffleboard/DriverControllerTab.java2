@@ -40,7 +40,7 @@ public class DriverControllerTab
     private final AxisObjects rightXObjects = new AxisObjects();
     // private final AxisObjects rightYObjects = new AxisObjects();
 
-    private final DriverController DRIVER_CONTROLLER = RobotContainer.DRIVER_CONTROLLER;
+    private final DriverController driverController = RobotContainer.driverController;
 
     private ShuffleboardTab driverControllerTab = Shuffleboard.getTab("Driver Controller");
 
@@ -71,8 +71,8 @@ public class DriverControllerTab
         int height = 2;
 
         // Get the current axis settings on the Driver Controller for the given axis
-        DriverController.AxisSettings axisSettings = DRIVER_CONTROLLER.new AxisSettings();
-        axisSettings = DRIVER_CONTROLLER.getAxisSettings(axis.axis);
+        DriverController.AxisSettings axisSettings = driverController.new AxisSettings();
+        axisSettings = driverController.getAxisSettings(axis.axis);
 
         // Create the text box to set the deadzone of the axis
         axisObjects.deadzoneEntry = createTextBox(name + " Deadzone", Double.toString(axisSettings.axisDeadzone), column, row, width, height);
@@ -150,7 +150,7 @@ public class DriverControllerTab
 
     private DriverController.AxisSettings getAxisSettingsFromShuffleboard(AxisObjects axisObjects)
     {
-        DriverController.AxisSettings axisSettings = DRIVER_CONTROLLER.new AxisSettings();
+        DriverController.AxisSettings axisSettings = driverController.new AxisSettings();
 
         // These MUST be read from the shuffleboard as a String, then converted to a Double because it is a "Text Box"
         axisSettings.axisDeadzone = Double.valueOf(axisObjects.deadzoneEntry.getString("0.1"));
@@ -166,16 +166,16 @@ public class DriverControllerTab
 
     public void setDriverControllerAxisSettings()
     {
-        DriverController.AxisSettings axisSettings = DRIVER_CONTROLLER.new AxisSettings();
+        DriverController.AxisSettings axisSettings = driverController.new AxisSettings();
 
         axisSettings = getAxisSettingsFromShuffleboard(moveXObjects);
-        DRIVER_CONTROLLER.setAxisSettings(DriverController.DriverAxisAction.kMoveX.axis, axisSettings);
+        driverController.setAxisSettings(DriverController.DriverAxisAction.kMoveX.axis, axisSettings);
 
         axisSettings = getAxisSettingsFromShuffleboard(moveYObjects);
-        DRIVER_CONTROLLER.setAxisSettings(DriverController.DriverAxisAction.kMoveY.axis, axisSettings);
+        driverController.setAxisSettings(DriverController.DriverAxisAction.kMoveY.axis, axisSettings);
 
         axisSettings = getAxisSettingsFromShuffleboard(rightXObjects);
-        DRIVER_CONTROLLER.setAxisSettings(DriverController.DriverAxisAction.kRotate.axis, axisSettings);
+        driverController.setAxisSettings(DriverController.DriverAxisAction.kRotate.axis, axisSettings);
 
         // axisSettings = getAxisSettingsFromShuffleboard(rightYObjects);
         // DRIVER_CONTROLLER.setAxisSettings(DriverController.Axis.kRightY, axisSettings);

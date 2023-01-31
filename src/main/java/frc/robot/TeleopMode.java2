@@ -26,8 +26,9 @@ public class TeleopMode implements ModeTransition
 
     
     // *** CLASS & INSTANCE VARIABLES ***
-    private static final DriverController DRIVER_CONTROLLER = RobotContainer.DRIVER_CONTROLLER;
-    private static final Drivetrain DRIVETRAIN = RobotContainer.DRIVETRAIN;
+    private static final DriverController driverController = RobotContainer.driverController;
+    private static final Drivetrain drivetrain = RobotContainer.drivetrain;
+
 
     private static final PowerDistribution PDH = RobotContainer.PDH;
   

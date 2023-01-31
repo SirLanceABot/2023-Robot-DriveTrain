@@ -1,13 +1,14 @@
 package frc.robot.subsystems;
 
 import java.lang.invoke.MethodHandles;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import frc.robot.constants.Constant;
 import frc.robot.constants.Port;
+import frc.robot.controls.DriverController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,9 +18,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
+
 /** Represents a swerve drive style drivetrain. */
-public class Drivetrain extends RobotDriveBase
+public class Drivetrain extends Subsystem4237 
 {
+
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 
     // *** STATIC INITIALIZATION BLOCK ***
@@ -43,9 +46,13 @@ public class Drivetrain extends RobotDriveBase
 
     private final WPI_Pigeon2 gyro; //Pigeon2
     Accelerometer accelerometer;
+    public DriverController driverController = null;
 
     // private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     //         frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
+
+    
+
     private final SwerveDriveKinematics kinematics;// = new SwerveDriveKinematics(
             // Port.Module.FRONT_LEFT.moduleLocation, Port.Module.FRONT_RIGHT.moduleLocation, Port.Module.BACK_LEFT.moduleLocation, Port.Module.BACK_RIGHT.moduleLocation);
 
@@ -54,9 +61,25 @@ public class Drivetrain extends RobotDriveBase
     // TODO: Make final by setting to an initial stopped state
     private SwerveModuleState[] previousSwerveModuleStates = null;
 
+    
 
+    private class PeriodicIO 
+    {
+      // INPUTS
+      private double leftYAxis;
+      private double rightXAxis;
+      private double rotate;
+      // OUTOUTS
+      
+    
+    }
+   
+
+
+    private PeriodicIO periodicIO;
+    
     // *** CLASS CONSTRUCTOR ***
-    public Drivetrain(DrivetrainConfig dd, Accelerometer accelerometer)
+    public Drivetrain(DrivetrainConfig dd, Accelerometer accelerometer, DriverController driverController)
     {
         // super();  // call the RobotDriveBase constructor
         // setSafetyEnabled(false);
@@ -64,21 +87,17 @@ public class Drivetrain extends RobotDriveBase
   * define all the inputs to be read at once
   * define all the outputs to be written at once
   */
-//   private PeriodicIO periodicIO;
-//   periodicIO = new PeriodicIO(); // all the periodic I/O appear here
-
-//   private class PeriodicIO {
-//     // INPUTS
-//     private double velocity;
-//     // OUTOUTS
-//     private double PctOutput;
-//   }
+  
+  periodicIO = new PeriodicIO(); // all the periodic I/O appear here
+    
 /**
   * end define periodic I/O
   */
-
+    
    //periodic.PctOutput = Constants.Arm.ExtendSlowlyMotorSpeed;
         this.accelerometer = accelerometer;
+        this.driverController = driverController;
+
 
         frontLeft = new SwerveModule(dd.frontLeftSwerveModule);
         frontRight = new SwerveModule(dd.frontRightSwerveModule);
@@ -108,6 +127,11 @@ public class Drivetrain extends RobotDriveBase
         resetOdometry();
         // setSafetyEnabled(true);
     }
+//FIND the SUPPLIER HERE!
+    Supplier<Double> leftYAxis = () -> periodicIO.leftYAxis;
+    Supplier<Double> rightXAxis = () -> periodicIO.rightXAxis;
+    Supplier<Double> rotate = () -> periodicIO.rotate;
+    
 
 
     // *** CLASS & INSTANCE METHODS ***
@@ -477,7 +501,7 @@ public class Drivetrain extends RobotDriveBase
         //FIXME odometry.resetPosition(new Pose2d(), new Rotation2d(gyro.getYaw()));
     }
 
-    @Override
+    //@Override
     public void stopMotor()
     {
         frontLeft.stopModule();
@@ -509,11 +533,11 @@ public class Drivetrain extends RobotDriveBase
         return gyro.getYaw();
     }
 
-    @Override
-    public String getDescription()
-    {
-        return "Swerve Drivetrain";
-    }
+    // @Override
+    // public String getDescription()
+    // {
+    //     return "Swerve Drivetrain";
+    // }
 
     /**
    * roboRIO tilt in degrees
@@ -540,4 +564,28 @@ public class Drivetrain extends RobotDriveBase
     public void setDefaultCommand(frc.robot.commands.SwerveDrive swerveDrive) {
     }
 
+    @Override
+    public void readPeriodicInputs()
+    {
+
+        periodicIO.leftYAxis = driverController.getRawAxis(1);
+        periodicIO.rightXAxis = driverController.getRawAxis(1); //FIXME
+        periodicIO.rotate = driverController.getRawAxis(1); //FIXME
+        
+    }
+
+
+    @Override
+    public void writePeriodicOutputs()
+    {
+        // TODO Auto-generated method stub 
+    }
+
+    public void feedWatchdog() 
+    {
+        frontLeft.feed();
+        backLeft.feed();
+        frontRight.feed();
+        backRight.feed();
+    }
 }
