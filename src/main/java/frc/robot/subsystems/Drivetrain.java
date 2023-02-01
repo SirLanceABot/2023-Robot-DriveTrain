@@ -73,7 +73,7 @@ public class Drivetrain extends Subsystem4237
       private ChassisSpeeds chassisSpeeds;
       private SwerveModuleState[] swerveModuleStates; //FIXME is this right?
       // OUTOUTS
-      
+      //FIXME shoudl we add odemetry and kinematics
     
     }
    
