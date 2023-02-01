@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.constants.Port;
 import frc.robot.controls.DriverController;
+import frc.robot.controls.Xbox;
 import frc.robot.subsystems.Drivetrain;
 
 
@@ -34,11 +35,11 @@ public class RobotContainer
         System.out.println("Loading: " + fullClassName);
     }
 	
-	private boolean useFullRobot		= false;
-	private boolean useBindings			= false;
+	private boolean useFullRobot		= true;
+	private boolean useBindings			= true;
 
-	private boolean useDrivetrain   	= false;
-    private boolean useDriverController = false;
+	private boolean useDrivetrain   	= true;
+    private boolean useDriverController = true;
 
     public final Drivetrain drivetrain;
     public final DriverController driverController;
@@ -81,14 +82,15 @@ public class RobotContainer
     //FIXME 
     private void configureDriverBindings()
     {
-      if(driverController != null && drivetrain != null)
+      	if(driverController != null && drivetrain != null)
         {
             //JoystickButton drivetrainA = new JoystickButton(joystick,1);
-        Supplier<Double> leftYAxis = () -> { return driverController.getRawAxis(1); };
-        Supplier<Double> rightXAxis = () -> {return driverController.getRawAxis(1); };
-        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, leftYAxis, rightXAxis));
+			Supplier<Double> leftYAxis = () -> { return driverController.getRawAxis(Xbox.Axis.kLeftY); };
+			Supplier<Double> leftXAxis = () -> { return driverController.getRawAxis(Xbox.Axis.kLeftX); };
+			Supplier<Double> rightXAxis = () -> {return driverController.getRawAxis(Xbox.Axis.kRightX); };
+			drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, leftYAxis, leftXAxis, rightXAxis, true));
         }
-  
+
     }
 
 	/**

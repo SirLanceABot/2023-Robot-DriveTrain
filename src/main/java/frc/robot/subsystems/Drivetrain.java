@@ -66,9 +66,9 @@ public class Drivetrain extends Subsystem4237
     private class PeriodicIO 
     {
       // INPUTS
-      private double leftYAxis;
-      private double rightXAxis;
-      private double rotate;
+      private double xSpeed;
+      private double ySpeed;
+      private double turn;
       // OUTOUTS
       
     
@@ -128,9 +128,9 @@ public class Drivetrain extends Subsystem4237
         // setSafetyEnabled(true);
     }
 //FIND the SUPPLIER HERE!
-    Supplier<Double> leftYAxis = () -> periodicIO.leftYAxis;
-    Supplier<Double> rightXAxis = () -> periodicIO.rightXAxis;
-    Supplier<Double> rotate = () -> periodicIO.rotate;
+    // Supplier<Double> leftYAxis = () -> periodicIO.leftYAxis;
+    // Supplier<Double> rightXAxis = () -> periodicIO.rightXAxis;
+    // Supplier<Double> rotate = () -> periodicIO.rotate;
     
 
 
@@ -557,20 +557,14 @@ public class Drivetrain extends Subsystem4237
   }
 
 
-    public void SwerveDrive(Double double1, Double double2) {
-    }
-
-
-    public void setDefaultCommand(frc.robot.commands.SwerveDrive swerveDrive) {
-    }
 
     @Override
     public void readPeriodicInputs()
     {
 
-        periodicIO.leftYAxis = driverController.getRawAxis(1);
-        periodicIO.rightXAxis = driverController.getRawAxis(1); //FIXME
-        periodicIO.rotate = driverController.getRawAxis(1); //FIXME
+        // periodicIO.xSpeed = driverController.getRawAxis(1);
+        // periodicIO.ySpeed = driverController.getRawAxis(1); //FIXME
+        // periodicIO.turn = driverController.getRawAxis(1); //FIXME
         
     }
 
