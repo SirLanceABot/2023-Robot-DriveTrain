@@ -46,7 +46,7 @@ public class Drivetrain extends Subsystem4237
 
     private final WPI_Pigeon2 gyro; //Pigeon2
     Accelerometer accelerometer;
-    public DriverController driverController = null;
+    //public DriverController driverController = null;
 
     // private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     //         frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
@@ -69,6 +69,9 @@ public class Drivetrain extends Subsystem4237
       private double xSpeed;
       private double ySpeed;
       private double turn;
+      private boolean fieldRelative;
+      private ChassisSpeeds chassisSpeeds;
+      private SwerveModuleState[] swerveModuleStates; //FIXME is this right?
       // OUTOUTS
       
     
@@ -79,7 +82,7 @@ public class Drivetrain extends Subsystem4237
     private PeriodicIO periodicIO;
     
     // *** CLASS CONSTRUCTOR ***
-    public Drivetrain(DrivetrainConfig dd, Accelerometer accelerometer, DriverController driverController)
+    public Drivetrain(DrivetrainConfig dd, Accelerometer accelerometer)//, DriverController driverController)
     {
         // super();  // call the RobotDriveBase constructor
         // setSafetyEnabled(false);
@@ -96,7 +99,7 @@ public class Drivetrain extends Subsystem4237
     
    //periodic.PctOutput = Constants.Arm.ExtendSlowlyMotorSpeed;
         this.accelerometer = accelerometer;
-        this.driverController = driverController;
+        //this.driverController = driverController;
 
 
         frontLeft = new SwerveModule(dd.frontLeftSwerveModule);
@@ -154,6 +157,45 @@ public class Drivetrain extends Subsystem4237
      */
     @SuppressWarnings("ParameterName")
     public void drive(double xSpeed, double ySpeed, double turn, boolean fieldRelative)
+    {
+        // updateOdometry();
+        periodicIO.xSpeed = xSpeed;
+        periodicIO.ySpeed = ySpeed;
+        periodicIO.turn = turn;
+        periodicIO.fieldRelative = fieldRelative;
+
+        //ChassisSpeeds chassisSpeeds;
+        //SwerveModuleState[] swerveModuleStates;
+
+        // if(fieldRelative)
+        //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turn, gyro.getRotation2d());
+        // else
+        //     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turn);
+        
+        // swerveModuleStates = kinematics.toSwerveModuleStates(periodicIO.chassisSpeeds);
+        // SwerveDriveKinematics.desaturateWheelSpeeds(periodicIO.swerveModuleStates, Constant.MAX_DRIVE_SPEED);
+        // printDesiredStates(swerveModuleStates);
+      
+        // frontLeft.setDesiredState(periodicIO.swerveModuleStates[0]);
+        // frontRight.setDesiredState(periodicIO.swerveModuleStates[1]);
+        // backLeft.setDesiredState(periodicIO.swerveModuleStates[2]);
+        // backRight.setDesiredState(periodicIO.swerveModuleStates[3]);
+
+        // previousSwerveModuleStates = periodicIO.swerveModuleStates;
+
+        // feedWatchdog();
+    }
+    
+    /**
+     * Method to drive the robot using joystick info.
+     *
+     * @param xSpeed Speed of the robot in the x direction (forward).
+     * @param ySpeed Speed of the robot in the y direction (sideways).
+     * @param turn Angular rate of the robot.
+     * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+     */
+    @SuppressWarnings("ParameterName")
+    public void drive2(double xSpeed, double ySpeed, double turn, boolean fieldRelative)
     {
         updateOdometry();
 
@@ -445,8 +487,8 @@ public class Drivetrain extends Subsystem4237
     }
 
     /** Updates the field relative position of the robot. */
-
-    public void updateOdometry()
+    //FIXME
+    private void updateOdometry()
     {
         odometry.update(
             gyro.getRotation2d(),
@@ -561,6 +603,18 @@ public class Drivetrain extends Subsystem4237
     @Override
     public void readPeriodicInputs()
     {
+        updateOdometry();
+
+        if(periodicIO.fieldRelative)
+            periodicIO.chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(periodicIO.xSpeed, periodicIO.ySpeed, periodicIO.turn, gyro.getRotation2d());
+        else
+            periodicIO.chassisSpeeds = new ChassisSpeeds(periodicIO.xSpeed, periodicIO.ySpeed, periodicIO.turn);
+        
+        periodicIO.swerveModuleStates = kinematics.toSwerveModuleStates(periodicIO.chassisSpeeds);
+
+        SwerveDriveKinematics.desaturateWheelSpeeds(periodicIO.swerveModuleStates, Constant.MAX_DRIVE_SPEED);
+        //FIXME is this used at all?
+        previousSwerveModuleStates = periodicIO.swerveModuleStates;
 
         // periodicIO.xSpeed = driverController.getRawAxis(1);
         // periodicIO.ySpeed = driverController.getRawAxis(1); //FIXME
@@ -572,7 +626,12 @@ public class Drivetrain extends Subsystem4237
     @Override
     public void writePeriodicOutputs()
     {
-        // TODO Auto-generated method stub 
+        frontLeft.setDesiredState(periodicIO.swerveModuleStates[0]);
+        frontRight.setDesiredState(periodicIO.swerveModuleStates[1]);
+        backLeft.setDesiredState(periodicIO.swerveModuleStates[2]);
+        backRight.setDesiredState(periodicIO.swerveModuleStates[3]);
+
+        feedWatchdog();
     }
 
     public void feedWatchdog() 

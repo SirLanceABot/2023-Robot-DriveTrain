@@ -56,7 +56,7 @@ public class RobotContainer
 	{
 		// Create the needed subsystems
 		driverController = (useFullRobot || useDriverController) ? new DriverController(0)     : null;
-		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer, driverController) 	                : null;
+		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer) 	 : null;
         
 		
 
