@@ -7,11 +7,12 @@ package frc.robot;
 import java.lang.invoke.MethodHandles;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.constants.Port;
 import frc.robot.controls.DriverController;
 import frc.robot.controls.Xbox;
 import frc.robot.subsystems.Drivetrain;
@@ -44,6 +45,8 @@ public class RobotContainer
     public final Drivetrain drivetrain;
     public final DriverController driverController;
     private static final Accelerometer accelerometer = new BuiltInAccelerometer(Accelerometer.Range.k2G);
+	private final WPI_Pigeon2 gyro = new WPI_Pigeon2(Port.Sensor.PIGEON, Port.Motor.CAN_BUS);
+
 
 	
 	// private Joystick joystick;
@@ -56,7 +59,7 @@ public class RobotContainer
 	{
 		// Create the needed subsystems
 		driverController = (useFullRobot || useDriverController) ? new DriverController(0)     : null;
-		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer) 	 : null;
+		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer, gyro) 	 : null;
         
 		
 
