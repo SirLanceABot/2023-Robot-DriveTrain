@@ -18,8 +18,9 @@ public class MainShuffleboard
     }
 
     // *** CLASS & INSTANCE VARIABLES ***
-    private static final DriverControllerTab DRIVER_CONTROLLER_TAB= RobotContainer.DRIVER_CONTROLLER_TAB;
-    private static final AutonomousTab AUTONOMOUS_TAB =  RobotContainer.AUTONOMOUS_TAB;
+    //FIXME is this right?
+    private static final DriverControllerTab DRIVER_CONTROLLER_TAB= MainShuffleboard.DRIVER_CONTROLLER_TAB;
+    private static final AutonomousTab AUTONOMOUS_TAB =  MainShuffleboard.AUTONOMOUS_TAB;
     
     
     // *** CLASS CONSTRUCTOR ***

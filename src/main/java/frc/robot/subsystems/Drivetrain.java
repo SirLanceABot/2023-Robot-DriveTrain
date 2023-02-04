@@ -41,7 +41,11 @@ public class Drivetrain extends Subsystem4237
       private double turn;
       private boolean fieldRelative;
       private ChassisSpeeds chassisSpeeds;
-      private SwerveModuleState[] swerveModuleStates; //FIXME is this right?
+      private SwerveModuleState[] swerveModuleStates;
+  
+    
+      
+      //FIXME is this right?
       // OUTOUTS
       // FIXME should we add odometry and kinematics?
     }
@@ -125,13 +129,13 @@ public class Drivetrain extends Subsystem4237
 
     // *** CLASS & INSTANCE METHODS ***
     //FIXME Is this used?
-    public void configOpenLoopRamp(double seconds)
-    {
-        frontLeft.configOpenLoopRamp(seconds);
-        frontRight.configOpenLoopRamp(seconds);
-        backLeft.configOpenLoopRamp(seconds);
-        backRight.configOpenLoopRamp(seconds);
-    }
+    // public void configOpenLoopRamp(double seconds)
+    // {
+    //     frontLeft.configOpenLoopRamp(seconds);
+    //     frontRight.configOpenLoopRamp(seconds);
+    //     backLeft.configOpenLoopRamp(seconds);
+    //     backRight.configOpenLoopRamp(seconds);
+    // }
 
     
     /**
@@ -347,7 +351,7 @@ public class Drivetrain extends Subsystem4237
 
                 periodicIO.swerveModuleStates = new SwerveModuleState[4];
             
-                // TODO: Check that this works
+                
                 periodicIO.swerveModuleStates[0] = new SwerveModuleState(0.0, Rotation2d.fromDegrees(45));
                 periodicIO.swerveModuleStates[1] = new SwerveModuleState(0.0, Rotation2d.fromDegrees(135));
                 periodicIO.swerveModuleStates[2] = new SwerveModuleState(0.0, Rotation2d.fromDegrees(135));

@@ -115,7 +115,7 @@ public class DriverController extends Xbox
         // TODO: Implement if second climb added
         kClimbTwoExtend(Dpad.kUp), 
         UpRightMethod(Dpad.kUpRight), 
-        kLockSwerve(Dpad.kRight), 
+        kLockwheels(Dpad.kRight), 
         // Method(Dpad.kDownRight), 
         kClimbTwoRetract(Dpad.kDown), 
         // Method(Dpad.kDownLeft), 

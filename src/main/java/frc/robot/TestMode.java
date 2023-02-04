@@ -4,7 +4,7 @@ import java.lang.invoke.MethodHandles;
 
 
 
-public class TestMode implements ModeTransition
+public class TestMode
 {
     private static final String fullClassName = MethodHandles.lookup().lookupClass().getCanonicalName();
 

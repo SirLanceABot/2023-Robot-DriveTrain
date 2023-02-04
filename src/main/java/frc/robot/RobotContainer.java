@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.lang.invoke.MethodHandles;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
@@ -12,6 +13,8 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.LockWheels;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.controls.DriverController;
 import frc.robot.controls.Xbox;
@@ -46,6 +49,7 @@ public class RobotContainer
     public final DriverController driverController;
     private static final Accelerometer accelerometer = new BuiltInAccelerometer(Accelerometer.Range.k2G);
 	private final WPI_Pigeon2 gyro = new WPI_Pigeon2(Port.Sensor.PIGEON, Port.Motor.CAN_BUS);
+	
 
 
 	
@@ -60,8 +64,7 @@ public class RobotContainer
 		// Create the needed subsystems
 		driverController = (useFullRobot || useDriverController) ? new DriverController(0)     : null;
 		drivetrain 	= (useFullRobot || useDrivetrain) ? new Drivetrain(Port.DrivetrainSetup.DRIVETRAIN_DATA, accelerometer, gyro) 	 : null;
-        
-		
+ 		
 
 		// Configure the trigger bindings
 		if(useFullRobot || useBindings)
@@ -87,10 +90,15 @@ public class RobotContainer
     {
       	if(driverController != null && drivetrain != null)
         {
-            //JoystickButton drivetrainA = new JoystickButton(joystick,1);
+			BooleanSupplier aButton = () -> {return driverController.getRawButton(Xbox.Button.kA); };
+			Trigger aButtonTrigger = new Trigger(aButton);
+			//aButtonTrigger.onTrue(new LockWheels(drivetrain));
+			aButtonTrigger.toggleOnTrue(new LockWheels(drivetrain));
+			//JoystickButton drivetrainA = new JoystickButton(joystick,1);
 			Supplier<Double> leftYAxis = () -> { return driverController.getRawAxis(Xbox.Axis.kLeftY); };
 			Supplier<Double> leftXAxis = () -> { return driverController.getRawAxis(Xbox.Axis.kLeftX); };
 			Supplier<Double> rightXAxis = () -> {return driverController.getRawAxis(Xbox.Axis.kRightX); };
+			
 			drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, leftYAxis, leftXAxis, rightXAxis, true));
         }
 
