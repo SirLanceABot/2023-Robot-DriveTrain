@@ -35,19 +35,17 @@ public class Drivetrain extends Subsystem4237
      */
     private class PeriodicIO 
     {
-      // INPUTS
-      private double xSpeed;
-      private double ySpeed;
-      private double turn;
-      private boolean fieldRelative;
-      private ChassisSpeeds chassisSpeeds;
-      private SwerveModuleState[] swerveModuleStates;
-  
-    
-      
-      //FIXME is this right?
-      // OUTOUTS
-      // FIXME should we add odometry and kinematics?
+        // INPUTS
+        private double xSpeed;
+        private double ySpeed;
+        private double turn;
+        private boolean fieldRelative;
+        
+        // OUTPUTS
+        private ChassisSpeeds chassisSpeeds;
+        private SwerveModuleState[] swerveModuleStates;
+        private SwerveDriveKinematics kinematics;
+        private SwerveDriveOdometry odometry;
     }
 
     private enum DriveMode
@@ -69,20 +67,12 @@ public class Drivetrain extends Subsystem4237
     private final WPI_Pigeon2 gyro; //Pigeon2
     private final Accelerometer accelerometer;
 
-    // private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    //         frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
-
-    
-
-    private final SwerveDriveKinematics kinematics;// = new SwerveDriveKinematics(
-            // Port.Module.FRONT_LEFT.moduleLocation, Port.Module.FRONT_RIGHT.moduleLocation, Port.Module.BACK_LEFT.moduleLocation, Port.Module.BACK_RIGHT.moduleLocation);
-
-    private final SwerveDriveOdometry odometry;
 
     // TODO: Make final by setting to an initial stopped state
     //private SwerveModuleState[] previousSwerveModuleStates = null;
     private DriveMode driveMode = DriveMode.kDrive;
     private boolean resetEncoders = false;
+    private boolean resetOdometry = false;
 
     private PeriodicIO periodicIO;
     
@@ -106,23 +96,25 @@ public class Drivetrain extends Subsystem4237
 
         // gyro = new WPI_Pigeon2(Port.Sensor.PIGEON, Port.Motor.CAN_BUS);
 
-        kinematics = new SwerveDriveKinematics(
+        periodicIO.kinematics = new SwerveDriveKinematics(
             dd.frontLeftSwerveModule.moduleLocation,
             dd.frontRightSwerveModule.moduleLocation,
             dd.backLeftSwerveModule.moduleLocation,
             dd.backRightSwerveModule.moduleLocation);
 
-        odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d(),
-            new SwerveModulePosition[] {
-            frontLeft.getPosition(),
-            frontRight.getPosition(),
-            backLeft.getPosition(),
-            backRight.getPosition()
+        periodicIO.odometry = new SwerveDriveOdometry(
+            periodicIO.kinematics, 
+            gyro.getRotation2d(),
+            new SwerveModulePosition[] 
+            {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()
+            });
 
-        });
-        //FIXME is this ok here?
         gyro.reset();
-        setGyro(180.0);
+        gyro.setYaw(180.0);
         resetOdometry();
         // setSafetyEnabled(true);
     }
@@ -213,37 +205,42 @@ public class Drivetrain extends Subsystem4237
 
     /** Updates the field relative position of the robot. */
     
-    private void updateOdometry()
-    {
-        //FIXME do we need to put this into periodic methods
-        odometry.update(
-            gyro.getRotation2d(),
-            new SwerveModulePosition[] {
-                frontLeft.getPosition(),
-                frontRight.getPosition(),
-                backLeft.getPosition(),
-                backRight.getPosition()
-            }
-        );
+    // private void updateOdometry()
+    // {
+    //     //FIXME do we need to put this into periodic methods
+    //     // periodicIO.odometry.update(
+    //     //     gyro.getRotation2d(),
+    //     //     new SwerveModulePosition[] 
+    //     //     {
+    //     //         frontLeft.getPosition(),
+    //     //         frontRight.getPosition(),
+    //     //         backLeft.getPosition(),
+    //     //         backRight.getPosition()
+    //     //     });
         
-        System.out.format( "pose: X:%f Y:%f degrees %f\n"
-        // a POSE has a TRANSLATION and a ROTATION
-        // POSE can return directly the X and Y of the TRANSLATION but not the Degrees, Radians,
-        // or trig functions of the ROTATION
-        // pose: X:-0.565898 Y:-0.273620 degrees 137.436218
-            ,odometry.getPoseMeters().getX()
-            ,odometry.getPoseMeters().getY()
-            ,odometry.getPoseMeters().getRotation().getDegrees()
-        );
+    //     System.out.format( "pose: X:%f Y:%f degrees %f\n"
+    //     // a POSE has a TRANSLATION and a ROTATION
+    //     // POSE can return directly the X and Y of the TRANSLATION but not the Degrees, Radians,
+    //     // or trig functions of the ROTATION
+    //     // pose: X:-0.565898 Y:-0.273620 degrees 137.436218
+    //         ,periodicIO.odometry.getPoseMeters().getX()
+    //         ,periodicIO.odometry.getPoseMeters().getY()
+    //         ,periodicIO.odometry.getPoseMeters().getRotation().getDegrees()
+    //     );
         
-    }
+    // }
     
 
 
-    // public Translation2d getCurrentTranslation()
-    // {
-    //     return odometry.getPoseMeters().getTranslation();
-    // }
+    public Translation2d getCurrentTranslation()
+    {
+        return periodicIO.odometry.getPoseMeters().getTranslation();
+    }
+
+    public double getDistanceDrivenMeters(Translation2d startingPosition)
+    {
+        return periodicIO.odometry.getPoseMeters().getTranslation().getDistance(startingPosition);
+    }
 
     public void resetEncoders()
     {
@@ -256,19 +253,7 @@ public class Drivetrain extends Subsystem4237
 
     public void resetOdometry()
     {
-        //FIXME
-        odometry.resetPosition(new Rotation2d(), /*zero*/
-            new SwerveModulePosition[]
-                {/*zeros distance, angle*/
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition()
-                },
-            new Pose2d(/*zeros facing X*/));
-
-        //FIXME  reset to what? 0, 0, 0? or AprilTags pose? or other?
-        //FIXME odometry.resetPosition(new Pose2d(), new Rotation2d(gyro.getYaw()));
+        resetOdometry = true;
     }
 
     //@Override
@@ -282,57 +267,41 @@ public class Drivetrain extends Subsystem4237
         //feedWatchdog();
     }
 
-    public void resetGyro()
-    {
-        gyro.reset();
-        System.out.println("GYRO RESET");
-    }
-
-    public void setGyro(double angle)
-    {
-        gyro.setYaw(angle);
-        System.out.println("GYRO RESET AT " + angle);
-    }
-
-    public void printGyro()
-    {
-        System.out.println("Yaw: " + gyro.getYaw());
-    }
-
-    public double getGyro()
-    {
-        return gyro.getYaw();
-    }
-
-    // @Override
-    // public String getDescription()
-    // {
-    //     return "Swerve Drivetrain";
-    // }
-
-    /**
-     * roboRIO tilt in degrees
-     * @return angle degrees
-     */
-    public double tiltXZ()
-    {
-        var accelX = accelerometer.getX();
-        var accelY = accelerometer.getY();
-        var accelZ = accelerometer.getZ();
-
-        // var angleXY = Math.atan2(mPeriodicIO.accelX, mPeriodicIO.accelY);
-        var angleXZ = Math.atan2(accelX, accelZ);
-        // var angleYZ = Math.atan2(mPeriodicIO.accelY, mPeriodicIO.accelZ);
-
-        return angleXZ*360./(2.*Math.PI);
-    }
 
 
 
     @Override
     public void readPeriodicInputs()
     {
-        updateOdometry();
+        if (resetOdometry)
+        {
+            periodicIO.odometry.resetPosition(
+                new Rotation2d(), /*zero*/
+                new SwerveModulePosition[]
+                {/*zeros distance, angle*/
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition()
+                },
+                new Pose2d(/*zeros facing X*/));
+            resetOdometry = false;
+        }
+        else 
+        {
+            periodicIO.odometry.update(
+                gyro.getRotation2d(),
+                new SwerveModulePosition[] 
+                {
+                    frontLeft.getPosition(),
+                    frontRight.getPosition(),
+                    backLeft.getPosition(),
+                    backRight.getPosition()
+                });
+
+                // System.out.println(gyro.getYaw());
+        }
+        
         switch (driveMode)
         {
             case kDrive:
@@ -342,7 +311,7 @@ public class Drivetrain extends Subsystem4237
                 else
                     periodicIO.chassisSpeeds = new ChassisSpeeds(periodicIO.xSpeed, periodicIO.ySpeed, periodicIO.turn);
                 
-                periodicIO.swerveModuleStates = kinematics.toSwerveModuleStates(periodicIO.chassisSpeeds);
+                periodicIO.swerveModuleStates = periodicIO.kinematics.toSwerveModuleStates(periodicIO.chassisSpeeds);
 
                 SwerveDriveKinematics.desaturateWheelSpeeds(periodicIO.swerveModuleStates, Constant.MAX_DRIVE_SPEED);
                 break;

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Autonomous1;
 import frc.robot.commands.LockWheels;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.controls.DriverController;
@@ -111,6 +112,8 @@ public class RobotContainer
 	 */
 	public Command getAutonomousCommand()
 	{
-		return null;
+		Command autoCommand = null;
+		autoCommand = new Autonomous1(drivetrain);
+		return autoCommand;
 	}
 }
