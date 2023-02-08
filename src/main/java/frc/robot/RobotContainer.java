@@ -19,6 +19,8 @@ import frc.robot.commands.LockWheels;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.controls.DriverController;
 import frc.robot.controls.Xbox;
+import frc.robot.sensors.Accelerometer4237;
+import frc.robot.sensors.Gyro4237;
 import frc.robot.subsystems.Drivetrain;
 
 
@@ -48,8 +50,8 @@ public class RobotContainer
 
     public final Drivetrain drivetrain;
     public final DriverController driverController;
-    private static final Accelerometer accelerometer = new BuiltInAccelerometer(Accelerometer.Range.k2G);
-	private final WPI_Pigeon2 gyro = new WPI_Pigeon2(Port.Sensor.PIGEON, Port.Motor.CAN_BUS);
+    private static final Accelerometer4237 accelerometer = new Accelerometer4237();
+	private final Gyro4237 gyro = new Gyro4237();
 	
 
 

@@ -6,6 +6,8 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import frc.robot.Constant;
+import frc.robot.sensors.Accelerometer4237;
+import frc.robot.sensors.Gyro4237;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -64,8 +66,8 @@ public class Drivetrain extends Subsystem4237
     private final SwerveModule backLeft;// = new SwerveModule(Port.Module.BACK_LEFT);
     private final SwerveModule backRight;// = new SwerveModule(Port.Module.BACK_RIGHT);
 
-    private final WPI_Pigeon2 gyro; //Pigeon2
-    private final Accelerometer accelerometer;
+    private final Gyro4237 gyro; //Pigeon2
+    private final Accelerometer4237 accelerometer;
 
 
     // TODO: Make final by setting to an initial stopped state
@@ -77,7 +79,7 @@ public class Drivetrain extends Subsystem4237
     private PeriodicIO periodicIO;
     
     // *** CLASS CONSTRUCTOR ***
-    public Drivetrain(DrivetrainConfig dd, Accelerometer accelerometer, WPI_Pigeon2 gyro)//, DriverController driverController)
+    public Drivetrain(DrivetrainConfig dd, Accelerometer4237 accelerometer, Gyro4237 gyro)//, DriverController driverController)
     {
         // super();  // call the RobotDriveBase constructor
         // setSafetyEnabled(false);
@@ -113,8 +115,6 @@ public class Drivetrain extends Subsystem4237
                 backRight.getPosition()
             });
 
-        gyro.reset();
-        gyro.setYaw(180.0);
         resetOdometry();
         // setSafetyEnabled(true);
     }
@@ -343,7 +343,7 @@ public class Drivetrain extends Subsystem4237
     @Override
     public void writePeriodicOutputs()
     {
-        if ( resetEncoders)
+        if (resetEncoders)
         {   //FIXME do we need to add a time delay to reset the encoders?
             frontLeft.stopModule();
             frontRight.stopModule();
